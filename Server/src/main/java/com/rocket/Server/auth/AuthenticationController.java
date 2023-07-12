@@ -3,10 +3,7 @@ package com.rocket.server.auth;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/SchoolManageSystem/auth")
@@ -20,6 +17,13 @@ public class AuthenticationController {
             @RequestBody RegisterRequest request
     ){
         return ResponseEntity.ok(service.register(request));
+    }
+
+    @PostMapping("/register/admin")
+    public ResponseEntity<AuthenticationResponse> register(
+            @RequestBody RegisterRequest request, @RequestParam(name = "adminKey") String adminKey
+    ){
+        return ResponseEntity.ok(service.register(request, adminKey));
     }
 
     @PostMapping("/authenticate")

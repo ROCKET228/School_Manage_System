@@ -16,8 +16,8 @@ public class AuthenticationService {
     private final UserRepository repository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
-
     private final AuthenticationManager authenticationManager;
+    private final String ADMIN_SECRET_KEY = "xxx_2004";
 
     public AuthenticationResponse register(RegisterRequest request) {
         var user = User.builder()
@@ -32,6 +32,25 @@ public class AuthenticationService {
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();
+    }
+
+    public AuthenticationResponse register(RegisterRequest request, String adminKey) {
+        if(adminKey.equals(ADMIN_SECRET_KEY)) {
+            var user = User.builder()
+                    .firstName(request.getFirstname())
+                    .lastName(request.getLastname())
+                    .email(request.getEmail())
+                    .password(passwordEncoder.encode(request.getPassword()))
+                    .role(Role.ADMIN)
+                    .build();
+            repository.save(user);
+            var jwtToken = jwtService.generateToken(user);
+            return AuthenticationResponse.builder()
+                    .token(jwtToken)
+                    .build();
+        }else{
+           throw new IllegalArgumentException("Not valid admin key to register");
+        }
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
