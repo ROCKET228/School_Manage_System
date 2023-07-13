@@ -1,6 +1,6 @@
 package com.rocket.server.user;
 
-public enum Role {
+public enum UserRole {
     ADMIN,
     TEACHER,
     STUDENT,

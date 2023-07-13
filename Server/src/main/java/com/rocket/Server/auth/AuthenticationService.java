@@ -1,7 +1,7 @@
 package com.rocket.server.auth;
 
 import com.rocket.server.config.JwtService;
-import com.rocket.server.user.Role;
+import com.rocket.server.user.UserRole;
 import com.rocket.server.user.User;
 import com.rocket.server.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ public class AuthenticationService {
                 .lastName(request.getLastname())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.USER)
+                .role(UserRole.USER)
                 .build();
         repository.save(user);
         var jwtToken = jwtService.generateToken(user);
@@ -41,7 +41,7 @@ public class AuthenticationService {
                     .lastName(request.getLastname())
                     .email(request.getEmail())
                     .password(passwordEncoder.encode(request.getPassword()))
-                    .role(Role.ADMIN)
+                    .role(UserRole.ADMIN)
                     .build();
             repository.save(user);
             var jwtToken = jwtService.generateToken(user);
