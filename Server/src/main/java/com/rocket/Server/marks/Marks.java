@@ -1,11 +1,15 @@
 package com.rocket.server.marks;
 
-import jakarta.persistence.Entity;
+import com.rocket.server.classes.Class;
+import com.rocket.server.subject.Subject;
+import com.rocket.server.user.User;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -14,12 +18,26 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 public class Marks {
-    //from other tables
-    private Integer classesId;
-    private Integer subjectId;
-    private Integer teacherId;
-    private Integer studentId;
-    //
-    private List<Integer> marksList;
+    @Id
+    private Integer id;
 
+    //TODO: create normal join
+    @ManyToOne
+    private Class aClass;
+
+    //TODO: create normal join
+    @ManyToOne
+    private Subject subject;
+
+    //TODO: create normal join
+    @ManyToOne
+    private User teacher;
+
+    //TODO: create normal join
+    @ManyToOne
+    private User student;
+
+    @ElementCollection
+    private List<Integer> list = new ArrayList<>();
 }
+

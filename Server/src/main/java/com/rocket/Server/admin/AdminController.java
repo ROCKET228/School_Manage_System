@@ -2,6 +2,7 @@ package com.rocket.server.admin;
 
 import com.rocket.server.auth.AuthenticationResponse;
 import com.rocket.server.auth.RegisterRequest;
+import com.rocket.server.classes.Class;
 import com.rocket.server.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -42,5 +43,17 @@ public class AdminController {
         return ResponseEntity.ok(adminService.createTeacher(request));
     }
 
+    @PostMapping("/createClasses")//change param name
+    public Class createClasses(@RequestParam String request){
+        return adminService.createClasses(request);
+    }
+
+    @PutMapping("/setStudentToClass")
+    public Class setStudentToClass(@RequestParam String userEmail, @RequestParam String className){
+        return adminService.setStudentToClass(userEmail, className);
+    }
+
+    //TODO: make controller for create subject
+    //TODO: make controller for set teacher to subject
 
 }
