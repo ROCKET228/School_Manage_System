@@ -23,7 +23,7 @@ public class Marks {
 
     //TODO: create normal join
     @ManyToOne
-    private Class aClass;
+    private Class classes;
 
     //TODO: create normal join
     @ManyToOne

@@ -7,9 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Data
@@ -25,7 +23,7 @@ public class Class {
 
     @OneToMany
     @JoinTable(name = "student_enrolled",
-            joinColumns = @JoinColumn(name = "classes_id"),
+            joinColumns = @JoinColumn(name = "class_id"),
             inverseJoinColumns = @JoinColumn(name =  "user_id")
     )
     private Set<User> enrolledStudents = new HashSet<>();
