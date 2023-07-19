@@ -20,13 +20,14 @@ public class AdminController {
 
 
     @PutMapping("/setTeacher")
-    public void setTeacherRole(@RequestParam String userEmail){
-        adminService.setTeacherRole(userEmail);
+    public User setTeacherRole(@RequestParam String userEmail){
+        return adminService.setTeacherRole(userEmail);
     }
 
+
     @PutMapping("/setStudent")
-    public void setStudentRole(@RequestParam String userEmail){
-        adminService.setStudentRole(userEmail);
+    public User setStudentRole(@RequestParam String userEmail){
+        return adminService.setStudentRole(userEmail);
     }
 
     @GetMapping("/getAllUsers")
@@ -34,13 +35,12 @@ public class AdminController {
         return adminService.getAllUsers();
     }
 
-    //TODO: check in postman
+
     @PostMapping("/createStudent")
     public ResponseEntity<AuthenticationResponse> createUser(@RequestBody RegisterRequest request){
         return ResponseEntity.ok(adminService.createStudent(request));
     }
 
-    //TODO: check in postman
     @PostMapping("/createTeacher")
     public ResponseEntity<AuthenticationResponse> createTeacher(@RequestBody RegisterRequest request){
         return ResponseEntity.ok(adminService.createTeacher(request));
@@ -56,13 +56,13 @@ public class AdminController {
         return adminService.setStudentToClass(userEmail, className);
     }
 
-    //TODO: check in postman
+
     @PostMapping("/createSubject")
     public Subject createSubject(@RequestParam String subjectName){
         return adminService.createSubject(subjectName);
     }
 
-    //TODO: check in postman
+
     @PutMapping("/setTeacherToSubject")
     public Subject setTeacherToSubject(@RequestParam String userEmail, @RequestParam String subjectName){
         return adminService.setTeacherToSubject(userEmail, subjectName);

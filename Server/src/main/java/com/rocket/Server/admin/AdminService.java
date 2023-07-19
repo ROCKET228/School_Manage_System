@@ -26,16 +26,16 @@ public class AdminService {
     private final ClassRepository classRepository;
     private final SubjectRepository subjectRepository;
 
-    public void setTeacherRole(String userEmail){
+    public User setTeacherRole(String userEmail){
         var user = userRepository.findByEmail(userEmail).orElseThrow();
         user.setRole(UserRole.TEACHER);
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
-    public void setStudentRole(String userEmail){
+    public User setStudentRole(String userEmail){
         var user = userRepository.findByEmail(userEmail).orElseThrow();
         user.setRole(UserRole.STUDENT);
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
     public List<User> getAllUsers() {

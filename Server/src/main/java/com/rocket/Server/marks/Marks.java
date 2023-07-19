@@ -8,7 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,19 +21,19 @@ public class Marks {
     private Integer id;
 
     //TODO: create normal join
-    @ManyToOne
+    @OneToOne
     private Class classes;
 
     //TODO: create normal join
-    @ManyToOne
+    @OneToOne
     private Subject subject;
 
     //TODO: create normal join
-    @ManyToOne
+    @OneToOne
     private User teacher;
 
     //TODO: create normal join
-    @ManyToOne
+    @OneToOne
     private User student;
 
     @ElementCollection

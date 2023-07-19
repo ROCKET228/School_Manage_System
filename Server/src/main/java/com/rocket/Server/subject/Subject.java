@@ -19,7 +19,6 @@ public class Subject {
     @Id
     @GeneratedValue
     private Integer id;
-    @Enumerated(EnumType.STRING)
     private String name;
 
     @OneToMany
