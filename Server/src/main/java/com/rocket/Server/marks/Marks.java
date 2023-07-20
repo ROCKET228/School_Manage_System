@@ -18,25 +18,25 @@ import java.util.List;
 @Entity
 public class Marks {
     @Id
+    @GeneratedValue
     private Integer id;
 
-    //TODO: create normal join
-    @OneToOne
+    @ManyToOne
     private Class classes;
 
-    //TODO: create normal join
-    @OneToOne
+
+    @ManyToOne
     private Subject subject;
 
-    //TODO: create normal join
-    @OneToOne
+
+    @ManyToOne
     private User teacher;
 
-    //TODO: create normal join
     @OneToOne
     private User student;
 
     @ElementCollection
+    @Column(name = "mark")
     private List<Integer> list = new ArrayList<>();
 }
 
