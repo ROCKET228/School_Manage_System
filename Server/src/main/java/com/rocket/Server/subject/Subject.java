@@ -31,4 +31,7 @@ public class Subject {
     public void enrolledTeacher(User user){
         enrolledTeachers.add(user);
     }
+    public void unrolledTeacher(User user){
+        enrolledTeachers.remove(user);
+    }
 }

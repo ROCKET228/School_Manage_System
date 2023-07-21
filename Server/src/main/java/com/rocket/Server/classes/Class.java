@@ -31,5 +31,9 @@ public class Class {
     public void enrolledStudent(User user){
         enrolledStudents.add(user);
     }
+
+    public void unrolledStudent(User user){
+        enrolledStudents.remove(user);
+    }
 }
 
