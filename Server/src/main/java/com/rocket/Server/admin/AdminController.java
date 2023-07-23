@@ -3,6 +3,7 @@ package com.rocket.server.admin;
 import com.rocket.server.auth.AuthenticationResponse;
 import com.rocket.server.auth.RegisterRequest;
 import com.rocket.server.classes.Class;
+import com.rocket.server.marks.Marks;
 import com.rocket.server.marks.MarksRequest;
 import com.rocket.server.subject.Subject;
 import com.rocket.server.user.User;
@@ -24,6 +25,15 @@ public class AdminController {
         return adminService.getAllUsers();
     }
 
+    @GetMapping("/getAllClass")
+    public List<Class> getAllClass(){ return adminService.getAllClass(); }
+
+    @GetMapping("/getAllSubject")
+    public List<Subject> getAllSubject(){ return adminService.getAllSubject(); }
+
+    @GetMapping("/getAllMarks")
+    public List<Marks> getAllMarks(){ return adminService.getAllMarks(); }
+
     @PutMapping("/setTeacher")
     public User setTeacherRole(@RequestParam String userEmail){
         return adminService.setTeacherRole(userEmail);
@@ -44,38 +54,45 @@ public class AdminController {
         return adminService.setTeacherToSubject(userEmail, subjectName);
     }
 
-    //TODO: check why i can create it without access token
+    @PutMapping("/unsetStudentFromClass")
+    public User unsetStudentFromClass(@RequestParam String userEmail, @RequestParam String className){
+        return adminService.unsetStudentFromClass(userEmail, className);
+    }
+
+    @PutMapping("/unsetTeacherFromSubject")
+    public User unsetTeacherFromSubject(@RequestParam String userEmail, @RequestParam String subjectName){
+        return adminService.unsetTeacherFromSubject(userEmail, subjectName);
+    }
+
+    @PutMapping("/setTeacherFromMarksTable")
+    public User setTeacherFromMarksTable(@RequestBody MarksRequest request){
+        return adminService.setTeacherFromMarksTable(request);
+    }
+
     @PostMapping("/createStudent")
     public ResponseEntity<AuthenticationResponse> createStudent(@RequestBody RegisterRequest request){
         return ResponseEntity.ok(adminService.createStudent(request));
     }
-    //TODO: check why i can create it without access token
+
     @PostMapping("/createTeacher")
     public ResponseEntity<AuthenticationResponse> createTeacher(@RequestBody RegisterRequest request){
         return ResponseEntity.ok(adminService.createTeacher(request));
     }
-    //TODO: check why i can create it without access token
-    //TODO: check in postman
+
     @PostMapping("/createClasses/{className}")
     public Class createClasses(@PathVariable String className){
         return adminService.createClasses(className);
     }
 
-
-    //TODO: check why i can create it without access token
-    //TODO: check in postman
     @PostMapping("/createSubject/{subjectName}")
     public Subject createSubject(@PathVariable String subjectName){
         return adminService.createSubject(subjectName);
     }
 
-    //TODO: check why i can create it without access token
     @PostMapping("/createMarks")
     public String createMarks(@RequestBody MarksRequest request){
         return adminService.createMarks(request);
     }
-
-    //TODO: make delete and unset for all controller
 
     //TODO: check in postman
     @DeleteMapping("/deleteUser/{userEmail}")
@@ -85,14 +102,13 @@ public class AdminController {
 
     //TODO: check in postman
     @DeleteMapping("/deleteClasses/{className}")
-    public Class deleteClasses(@PathVariable String className){
+    public String deleteClasses(@PathVariable String className){
         return adminService.deleteClasses(className);
     }
 
-
     //TODO: check in postman
     @DeleteMapping("/deleteSubject/{subjectName}")
-    public Subject deleteSubject(@PathVariable String subjectName){
+    public String deleteSubject(@PathVariable String subjectName){
         return adminService.deleteSubject(subjectName);
     }
 
@@ -102,22 +118,7 @@ public class AdminController {
         return adminService.deleteMarks(className, subjectName);
     }
 
-    //TODO: check in postman
-    @PutMapping("/unsetStudentFromClass")
-    public User unsetStudentFromClass(@RequestParam String userEmail, @RequestParam String className){
-        return adminService.unsetStudentFromClass(userEmail, className);
-    }
-
-    //TODO: check in postman
-    @PutMapping("/unsetTeacherFromSubject")
-    public User unsetTeacherFromSubject(@RequestParam String userEmail, @RequestParam String subjectName){
-        return adminService.unsetTeacherFromSubject(userEmail, subjectName);
-    }
-
-    //TODO: unset teacher  from class in marks
-    //TODO: set teacher to marks
-
-
+    //TODO: CHANGE REQUEST PARAM TO PARAM VARIABLE
 
     //TODO: CREATE TEACHER AND STUDENT VISION
 

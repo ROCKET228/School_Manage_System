@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -98,7 +99,7 @@ public class AdminService {
 
     public Subject createSubject(String subjectName) {
         if(subjectRepository.findByName(subjectName).isPresent()){
-            throw new IllegalArgumentException("Subject with name" + subjectName + "already exist");
+            throw new IllegalArgumentException("Subject with nam e" + subjectName + " already exist");
         }
         var subject = Subject.builder().name(subjectName).build();
         return subjectRepository.save(subject);
@@ -121,7 +122,9 @@ public class AdminService {
         if(!teacher.getRole().equals(UserRole.TEACHER)){
             throw new IllegalArgumentException("User has no role teacher");
         }
-
+        if(!subject.getEnrolledTeachers().contains(teacher)){
+            throw new IllegalArgumentException("That teacher can not teach that subject");
+        }
         for (User student : classEntity.getEnrolledStudents()) {
             Marks marks =  Marks.builder().classes(classEntity)
                     .subject(subject)
@@ -140,23 +143,23 @@ public class AdminService {
         return user;
     }
 
-    public Class deleteClasses(String className) {
+    public String deleteClasses(String className) {
         Class classEntity = classRepository.findByName(className).orElseThrow( () -> new IllegalArgumentException("Class not found"));
         classRepository.delete(classEntity);
-        return classEntity;
+        return "Successfully deleted class " + className;
     }
 
-    public Subject deleteSubject(String subjectName) {
+    public String deleteSubject(String subjectName) {
         Subject subject = subjectRepository.findByName(subjectName).orElseThrow( () -> new IllegalArgumentException("Subject not found"));
         subjectRepository.delete(subject);
-        return subject;
+        return "Successfully deleted subject " + subjectName;
     }
 
     public String deleteMarks(String className, String subjectName) {
         Class classEntity = classRepository.findByName(className).orElseThrow( () -> new IllegalArgumentException("Class not found"));
         Subject subject = subjectRepository.findByName(subjectName).orElseThrow( () -> new IllegalArgumentException("Subject not found"));
         marksRepository.deleteAllByClassesAndSubject(classEntity, subject);
-        return "Successfully deleted class"+ className +" marks, in subject" + subjectName;
+        return "Successfully deleted class "+ className +" marks table, in subject " + subjectName;
     }
 
     public User unsetTeacherFromSubject(String userEmail, String subjectName) {
@@ -179,5 +182,31 @@ public class AdminService {
         classEntity.unrolledStudent(student);
         classRepository.save(classEntity);
         return student;
+    }
+
+    public User setTeacherFromMarksTable(MarksRequest request) {
+        User teacher = userRepository.findByEmail(request.getTeacheremail()).orElseThrow(() -> new IllegalArgumentException("Teacher "+ request.getTeacheremail() + " not found"));
+        if(!teacher.getRole().equals(UserRole.TEACHER)){
+            throw new IllegalArgumentException("User has no role teacher");
+        }
+        Class classEntity = classRepository.findByName(request.getClassname()).orElseThrow( () -> new IllegalArgumentException("Class "+ request.getClassname() + " not found"));
+        Subject subject = subjectRepository.findByName(request.getSubjectname()).orElseThrow( () -> new IllegalArgumentException("Subject not found"));
+        Marks marks = marksRepository.findByClassesAndSubject(classEntity, subject).orElseThrow(() -> new IllegalArgumentException("Marks table not found"));
+        marks.setTeacher(teacher);
+        marksRepository.save(marks);
+        return teacher;
+    }
+
+
+    public List<Class> getAllClass() {
+        return classRepository.findAll();
+    }
+
+    public List<Subject> getAllSubject() {
+        return subjectRepository.findAll();
+    }
+
+    public List<Marks> getAllMarks() {
+        return marksRepository.findAll();
     }
 }
