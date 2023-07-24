@@ -64,9 +64,9 @@ public class AdminController {
         return adminService.unsetTeacherFromSubject(userEmail, subjectName);
     }
 
-    @PutMapping("/setTeacherFromMarksTable")
-    public User setTeacherFromMarksTable(@RequestBody MarksRequest request){
-        return adminService.setTeacherFromMarksTable(request);
+    @PutMapping("/changeTeacherInMarksTable")
+    public User changeTeacherInMarksTable(@RequestBody MarksRequest request){
+        return adminService.changeTeacherInMarksTable(request);
     }
 
     @PostMapping("/createStudent")
@@ -94,25 +94,24 @@ public class AdminController {
         return adminService.createMarks(request);
     }
 
-    //TODO: check in postman
+
     @DeleteMapping("/deleteUser/{userEmail}")
     public User deleteUser(@PathVariable String userEmail){
         return adminService.deleteUser(userEmail);
     }
 
-    //TODO: check in postman
+
     @DeleteMapping("/deleteClasses/{className}")
     public String deleteClasses(@PathVariable String className){
         return adminService.deleteClasses(className);
     }
 
-    //TODO: check in postman
+
     @DeleteMapping("/deleteSubject/{subjectName}")
     public String deleteSubject(@PathVariable String subjectName){
         return adminService.deleteSubject(subjectName);
     }
 
-    //TODO: check in postman
     @DeleteMapping("/deleteMarksTable/{className}/{subjectName}")
     public String deleteMarks(@PathVariable String className, @PathVariable String subjectName){
         return adminService.deleteMarks(className, subjectName);

@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 
 
 import java.util.List;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -184,7 +183,7 @@ public class AdminService {
         return student;
     }
 
-    public User setTeacherFromMarksTable(MarksRequest request) {
+    public User changeTeacherInMarksTable(MarksRequest request) {
         User teacher = userRepository.findByEmail(request.getTeacheremail()).orElseThrow(() -> new IllegalArgumentException("Teacher "+ request.getTeacheremail() + " not found"));
         if(!teacher.getRole().equals(UserRole.TEACHER)){
             throw new IllegalArgumentException("User has no role teacher");

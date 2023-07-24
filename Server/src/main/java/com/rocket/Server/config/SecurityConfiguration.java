@@ -25,6 +25,8 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/SchoolManageSystem/auth/**").permitAll()
                         .requestMatchers("/SchoolManageSystem/admin/**").hasAuthority("ADMIN")
+                        .requestMatchers("/SchoolManageSystem/teacher/**").hasAnyAuthority("ADMIN","TEACHER")
+                        .requestMatchers("/SchoolManageSystem/student/**").hasAnyAuthority("ADMIN","TEACHER","STUDENT")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
