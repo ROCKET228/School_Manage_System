@@ -12,4 +12,6 @@ public interface MarksRepository extends JpaRepository<Marks, Integer> {
     Optional<Marks> findByTeacher(User teacher);
     Optional<Marks> removeByTeacher(User teacher);
     Optional<Marks> findByClassesAndSubject(Class classEntity, Subject subject);
+    Optional<Marks> findByStudentAndSubject(User student, Subject subject);
+    Optional<Marks> findAllByClassesAndSubject(Class classEntity, Subject subject);
 }

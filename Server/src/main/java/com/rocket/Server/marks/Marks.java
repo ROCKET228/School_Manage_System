@@ -4,6 +4,7 @@ import com.rocket.server.classes.Class;
 import com.rocket.server.subject.Subject;
 import com.rocket.server.user.User;
 import jakarta.persistence.*;
+import jdk.jfr.Name;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -36,7 +37,11 @@ public class Marks {
     private User student;
 
     @ElementCollection
-    @Column(name = "mark")
-    private List<Integer> list = new ArrayList<>();
+    @CollectionTable(name = "marks_list")
+    private List<Integer> marks = new ArrayList<>();
+
+    public void addMark(Integer mark){
+        marks.add(mark);
+    }
 }
 
