@@ -4,13 +4,12 @@ import com.rocket.server.classes.Class;
 import com.rocket.server.subject.Subject;
 import com.rocket.server.user.User;
 import jakarta.persistence.*;
-import jdk.jfr.Name;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Data
 @Builder
@@ -33,15 +32,20 @@ public class Marks {
     @ManyToOne
     private User teacher;
 
-    @OneToOne
+    @ManyToOne
     private User student;
+
 
     @ElementCollection
     @CollectionTable(name = "marks_list")
-    private List<Integer> marks = new ArrayList<>();
+    private Map<LocalDateTime, Integer> marks = new HashMap();
 
     public void addMark(Integer mark){
-        marks.add(mark);
+        marks.put(LocalDateTime.now(), mark);
+    }
+
+    public void removeMark(Integer mark, LocalDateTime date){
+        marks.remove(date, mark);
     }
 }
 
