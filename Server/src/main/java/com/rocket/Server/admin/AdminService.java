@@ -93,6 +93,18 @@ public class AdminService {
            throw new IllegalArgumentException("User with this email "+ userEmail + " has no role student");
         }
         classes.enrolledStudent(student);
+        if(marksRepository.findAllByClasses(classes).isPresent()){
+            Marks marks = marksRepository.findAllByClasses(classes).orElseThrow(() -> new IllegalArgumentException("Marks table not found"));
+            Subject subject = marks.getSubject();
+            User teacher = marks.getTeacher();
+            Marks newMarks =  Marks.builder().classes(classes)
+                    .subject(subject)
+                    .teacher(teacher)
+                    .student(student)
+                    .build();
+
+            marksRepository.save(newMarks);
+        }
         return classRepository.save(classes);
     }
 
