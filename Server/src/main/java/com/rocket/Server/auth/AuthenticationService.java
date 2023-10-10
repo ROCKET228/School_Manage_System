@@ -17,7 +17,7 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
-    private final String ADMIN_SECRET_KEY = "xxx_2004";
+    private final String ADMIN_SECRET_KEY = "12345";
 
     public AuthenticationResponse register(RegisterRequest request) {
         var user = User.builder()
