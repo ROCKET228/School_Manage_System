@@ -13,3 +13,9 @@ spring:
                 format_sql: true
         database: postgresql
         database-platform: org.hibernate.dialect.PostgreSQLDialect
+application:
+    security:
+        admin:
+            secret-key: "12345"
+        jwt:
+            secret-key: "wNNzWV9GkJQ6OJtWtAZ0umC032DqYYQ2mvBHl3mdjmYA9e8Scr/QWJqRCSvWK0vn"

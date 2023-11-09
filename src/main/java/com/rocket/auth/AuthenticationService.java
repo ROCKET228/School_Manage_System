@@ -5,6 +5,7 @@ import com.rocket.user.UserRole;
 import com.rocket.config.JwtService;
 import com.rocket.user.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,7 +18,9 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
-    private final String ADMIN_SECRET_KEY = "12345";
+
+    @Value("${application.security.admin.secret-key}")
+    private String ADMIN_SECRET_KEY;
 
     public AuthenticationResponse register(RegisterRequest request) {
         var user = User.builder()
