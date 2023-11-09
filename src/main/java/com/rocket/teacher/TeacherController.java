@@ -21,20 +21,22 @@ public class TeacherController {
     }
 
 
-    @PutMapping("setMarksToStudent/{subjectName}/{studentMail}/{mark}")
-    public Marks setMarksToStudent(@PathVariable String subjectName, @PathVariable String studentMail, @PathVariable Integer mark, @RequestHeader("Authorization") String authorizationHeader){
+    @PutMapping("setMarksToStudent")
+    public Marks setMarksToStudent(@RequestParam String subjectName, @RequestParam String studentMail, @RequestParam Integer mark, @RequestHeader("Authorization") String authorizationHeader){
         return teacherService.setMarksToStudent(subjectName, studentMail, mark, authorizationHeader);
     }
 
 
-    @PostMapping("createMarksTable/{subjectName}/{className}")
-    public String createMarksTable(@PathVariable String className, @PathVariable String subjectName, @RequestHeader("Authorization") String authorizationHeader){
+    @PostMapping("createMarksTable")
+    public String createMarksTable(@RequestParam String className, @RequestParam String subjectName, @RequestHeader("Authorization") String authorizationHeader){
         return teacherService.createMarksTable(className, subjectName, authorizationHeader);
     }
 
-    //TODO: check in postman
-    @DeleteMapping("unsetMarksFromStudent/{subjectName}/{studentMail}/{date}/{mark}")
-    public Marks unsetMarksFromStudent(@PathVariable String subjectName, @PathVariable String studentMail, @PathVariable LocalDateTime date, @PathVariable Integer mark, @RequestHeader("Authorization") String authorizationHeader){
+    //TODO: make it work
+    @DeleteMapping("unsetMarksFromStudent")
+    public Marks unsetMarksFromStudent(@RequestParam String subjectName, @RequestParam String studentMail, @RequestParam LocalDateTime date, @RequestParam Integer mark, @RequestHeader("Authorization") String authorizationHeader){
         return teacherService.unsetMarksFromStudent(subjectName, studentMail,date, mark, authorizationHeader);
     }
+
+    //TODO: make controller to change student mark
 }

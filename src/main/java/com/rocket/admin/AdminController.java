@@ -34,30 +34,36 @@ public class AdminController {
     @GetMapping("/getAllMarks")
     public List<Marks> getAllMarks(){ return adminService.getAllMarks(); }
 
+
     @PutMapping("/setTeacher")
     public User setTeacherRole(@RequestParam String userEmail){
         return adminService.setTeacherRole(userEmail);
     }
+
 
     @PutMapping("/setStudent")
     public User setStudentRole(@RequestParam String userEmail){
         return adminService.setStudentRole(userEmail);
     }
 
+
     @PutMapping("/setStudentToClass")
     public Class setStudentToClass(@RequestParam String userEmail, @RequestParam String className){
         return adminService.setStudentToClass(userEmail, className);
     }
+
 
     @PutMapping("/setTeacherToSubject")
     public Subject setTeacherToSubject(@RequestParam String userEmail, @RequestParam String subjectName){
         return adminService.setTeacherToSubject(userEmail, subjectName);
     }
 
+
     @PutMapping("/unsetStudentFromClass")
     public User unsetStudentFromClass(@RequestParam String userEmail, @RequestParam String className){
         return adminService.unsetStudentFromClass(userEmail, className);
     }
+
 
     @PutMapping("/unsetTeacherFromSubject")
     public User unsetTeacherFromSubject(@RequestParam String userEmail, @RequestParam String subjectName){
@@ -79,13 +85,15 @@ public class AdminController {
         return ResponseEntity.ok(adminService.createTeacher(request));
     }
 
-    @PostMapping("/createClasses/{className}")
-    public Class createClasses(@PathVariable String className){
+
+    @PostMapping("/createClasses")
+    public Class createClasses(@RequestParam String className){
         return adminService.createClasses(className);
     }
 
-    @PostMapping("/createSubject/{subjectName}")
-    public Subject createSubject(@PathVariable String subjectName){
+
+    @PostMapping("/createSubject")
+    public Subject createSubject(@RequestParam String subjectName){
         return adminService.createSubject(subjectName);
     }
 
@@ -95,29 +103,28 @@ public class AdminController {
     }
 
 
-    @DeleteMapping("/deleteUser/{userEmail}")
-    public User deleteUser(@PathVariable String userEmail){
+    @DeleteMapping("/deleteUser")
+    public User deleteUser(@RequestParam String userEmail){
         return adminService.deleteUser(userEmail);
     }
 
 
-    @DeleteMapping("/deleteClasses/{className}")
-    public String deleteClasses(@PathVariable String className){
+    @DeleteMapping("/deleteClasses")
+    public String deleteClasses(@RequestParam String className){
         return adminService.deleteClasses(className);
     }
 
-
-    @DeleteMapping("/deleteSubject/{subjectName}")
-    public String deleteSubject(@PathVariable String subjectName){
+    @DeleteMapping("/deleteSubject")
+    public String deleteSubject(@RequestParam String subjectName){
         return adminService.deleteSubject(subjectName);
     }
 
-    @DeleteMapping("/deleteMarksTable/{className}/{subjectName}")
-    public String deleteMarks(@PathVariable String className, @PathVariable String subjectName){
+    //TODO: check why its not work
+    @DeleteMapping("/deleteMarksTable")
+    public String deleteMarks(@RequestParam String className, @RequestParam String subjectName){
         return adminService.deleteMarks(className, subjectName);
     }
 
-    //TODO: CHANGE REQUEST PARAM TO PARAM VARIABLE
 
     //TODO: CHANGE RESPONSE
 
