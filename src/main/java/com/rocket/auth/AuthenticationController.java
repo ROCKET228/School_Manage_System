@@ -2,7 +2,6 @@ package com.rocket.auth;
 
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +14,6 @@ public class AuthenticationController {
 
 
     @PostMapping("/register")
-    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<AuthenticationResponse> register(
             @RequestBody RegisterRequest request
     ){
@@ -23,7 +21,6 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register/admin")
-    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<AuthenticationResponse> register(
             @RequestBody RegisterRequest request, @RequestParam(name = "adminKey") String adminKey
     ){
@@ -31,7 +28,6 @@ public class AuthenticationController {
     }
 
     @PostMapping("/authenticate")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<AuthenticationResponse> authenticate(
             @RequestBody AuthenticationRequest request
     ){

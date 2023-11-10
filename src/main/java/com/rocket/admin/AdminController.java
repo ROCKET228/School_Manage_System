@@ -88,13 +88,11 @@ public class AdminController {
     }
 
     @PostMapping("/createStudent")
-    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<AuthenticationResponse> createStudent(@RequestBody RegisterRequest request){
         return ResponseEntity.ok(adminService.createStudent(request));
     }
 
     @PostMapping("/createTeacher")
-    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<AuthenticationResponse> createTeacher(@RequestBody RegisterRequest request){
         return ResponseEntity.ok(adminService.createTeacher(request));
     }
