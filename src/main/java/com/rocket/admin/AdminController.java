@@ -1,6 +1,6 @@
 package com.rocket.admin;
 
-import com.rocket.marks.MarksRequest;
+import com.rocket.marks.MarksTableRequest;
 import com.rocket.auth.AuthenticationResponse;
 import com.rocket.auth.RegisterRequest;
 import com.rocket.classes.Class;
@@ -83,7 +83,7 @@ public class AdminController {
 
     @PutMapping("/changeTeacherInMarksTable")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public User changeTeacherInMarksTable(@RequestBody MarksRequest request){
+    public User changeTeacherInMarksTable(@RequestBody MarksTableRequest request){
         return adminService.changeTeacherInMarksTable(request);
     }
 
@@ -111,19 +111,17 @@ public class AdminController {
         return adminService.createSubject(subjectName);
     }
 
-    @PostMapping("/createMarks")
+    @PostMapping("/createMarksTable")
     @ResponseStatus(HttpStatus.CREATED)
-    public String createMarks(@RequestBody MarksRequest request){
-        return adminService.createMarks(request);
+    public String createMarksTable(@RequestBody MarksTableRequest request){
+        return adminService.createMarksTable(request);
     }
-
 
     @DeleteMapping("/deleteUser")
     @ResponseStatus(HttpStatus.CREATED)
     public User deleteUser(@RequestParam String userEmail){
         return adminService.deleteUser(userEmail);
     }
-
 
     @DeleteMapping("/deleteClasses")
     @ResponseStatus(HttpStatus.OK)
@@ -137,11 +135,10 @@ public class AdminController {
         return adminService.deleteSubject(subjectName);
     }
 
-    //TODO: check why its not work
     @DeleteMapping("/deleteMarksTable")
     @ResponseStatus(HttpStatus.OK)
-    public String deleteMarks(@RequestParam String className, @RequestParam String subjectName){
-        return adminService.deleteMarks(className, subjectName);
+    public String deleteMarksTable(@RequestParam String className, @RequestParam String subjectName){
+        return adminService.deleteMarksTable(className, subjectName);
     }
 
 }

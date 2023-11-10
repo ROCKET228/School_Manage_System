@@ -9,7 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.*;
 
 @Data
@@ -39,14 +39,18 @@ public class Marks {
 
     @ElementCollection
     @CollectionTable(name = "marks_list")
-    private Map<LocalDateTime, Integer> marks = new HashMap();
+    private Map<LocalDate, Integer> marks = new HashMap();
 
     public void addMark(Integer mark){
-        marks.put(LocalDateTime.now(), mark);
+        marks.put(LocalDate.now(), mark);
     }
 
-    public void removeMark(Integer mark, LocalDateTime date){
+    public void removeMark(Integer mark, LocalDate date){
         marks.remove(date, mark);
+    }
+
+    public void changeMark( Integer mark, LocalDate date){
+        marks.replace(date, mark);
     }
 }
 

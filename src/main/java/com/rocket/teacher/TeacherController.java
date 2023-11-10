@@ -1,11 +1,11 @@
 package com.rocket.teacher;
 
 import com.rocket.marks.Marks;
+import com.rocket.marks.MarksRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -21,13 +21,11 @@ public class TeacherController {
         return teacherService.getClassMarksInSubject(className, subjectName, authorizationHeader);
     }
 
-
     @PutMapping("setMarksToStudent")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public Marks setMarksToStudent(@RequestParam String subjectName, @RequestParam String studentMail, @RequestParam Integer mark, @RequestHeader("Authorization") String authorizationHeader){
         return teacherService.setMarksToStudent(subjectName, studentMail, mark, authorizationHeader);
     }
-
 
     @PostMapping("createMarksTable")
     @ResponseStatus(HttpStatus.CREATED)
@@ -35,12 +33,15 @@ public class TeacherController {
         return teacherService.createMarksTable(className, subjectName, authorizationHeader);
     }
 
-    //TODO: make it work
     @DeleteMapping("unsetMarksFromStudent")
     @ResponseStatus(HttpStatus.OK)
-    public Marks unsetMarksFromStudent(@RequestParam String subjectName, @RequestParam String studentMail, @RequestParam LocalDateTime date, @RequestParam Integer mark, @RequestHeader("Authorization") String authorizationHeader){
-        return teacherService.unsetMarksFromStudent(subjectName, studentMail,date, mark, authorizationHeader);
+    public Marks unsetMarksFromStudent(@RequestBody MarksRequest marksRequest, @RequestHeader("Authorization") String authorizationHeader){
+        return teacherService.unsetMarksFromStudent(marksRequest.getSubjectName(), marksRequest.getStudentMail(), marksRequest.getDate(), marksRequest.getMark(), authorizationHeader);
     }
 
-    //TODO: make controller to change student mark
+    @PutMapping("changeStudentMark")
+    @ResponseStatus(HttpStatus.OK)
+    public Marks changeStudentMark(@RequestBody MarksRequest marksRequest, @RequestHeader("Authorization") String authorizationHeader){
+        return teacherService.changeStudentMark(marksRequest.getSubjectName(), marksRequest.getStudentMail(), marksRequest.getDate(), marksRequest.getMark(), authorizationHeader);
+    }
 }

@@ -13,7 +13,7 @@ import com.rocket.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 
@@ -97,8 +97,7 @@ public class TeacherService {
         return "Marks table successfully created";
     }
 
-
-    public Marks unsetMarksFromStudent(String subjectName, String studentMail, LocalDateTime date, Integer mark, String authorizationHeader) {
+    public Marks unsetMarksFromStudent(String subjectName, String studentMail, LocalDate date, Integer mark, String authorizationHeader) {
         User student = userRepository.findByEmail(studentMail).orElseThrow(() -> new IllegalArgumentException("User with this email "+ studentMail + " is not exist"));
         Subject subject = subjectRepository.findByName(subjectName).orElseThrow(() -> new IllegalArgumentException("Subject with this name " + subjectName + "  is not exist"));
         Marks marks = marksRepository.findByStudentAndSubject(student, subject).orElseThrow(() -> new IllegalArgumentException("There is no student " + studentMail+ " in subject " + subjectName));
@@ -116,6 +115,28 @@ public class TeacherService {
         }
 
         marks.removeMark(mark, date);
+        return marksRepository.save(marks);
+    }
+
+    public Marks changeStudentMark(String subjectName, String studentMail, LocalDate date, Integer mark, String authorizationHeader) {
+        User student = userRepository.findByEmail(studentMail).orElseThrow(() -> new IllegalArgumentException("User with this email "+ studentMail + " is not exist"));
+        Subject subject = subjectRepository.findByName(subjectName).orElseThrow(() -> new IllegalArgumentException("Subject with this name " + subjectName + "  is not exist"));
+        Marks marks = marksRepository.findByStudentAndSubject(student, subject).orElseThrow(() -> new IllegalArgumentException("There is no student " + studentMail+ " in subject " + subjectName));
+        String jwtToken = authorizationHeader.replace("Bearer ", "");
+        String userEmail = jwtService.extractUsername(jwtToken);
+        User teacher = userRepository.findByEmail(userEmail).orElseThrow(() -> new IllegalArgumentException("Teacher not found"));
+        if (!teacher.getRole().equals(UserRole.TEACHER)) {
+            throw new IllegalArgumentException("User has no role teacher");
+        }
+        if (!subject.getEnrolledTeachers().contains(teacher)) {
+            throw new IllegalArgumentException("That teacher cannot teach that subject");
+        }
+        if (!marks.getTeacher().equals(teacher)) {
+            throw new IllegalArgumentException("That teacher is not in this marks table");
+        }
+
+        marks.changeMark(mark, date);
+
         return marksRepository.save(marks);
     }
 }

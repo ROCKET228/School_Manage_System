@@ -3,7 +3,7 @@ package com.rocket.admin;
 import com.rocket.classes.Class;
 import com.rocket.marks.Marks;
 import com.rocket.marks.MarksRepository;
-import com.rocket.marks.MarksRequest;
+import com.rocket.marks.MarksTableRequest;
 import com.rocket.user.UserRepository;
 import com.rocket.user.UserRole;
 import com.rocket.auth.AuthenticationResponse;
@@ -126,10 +126,10 @@ public class AdminService {
         return subjectRepository.save(subject);
     }
 
-    public String createMarks(MarksRequest request) {
-        Class classEntity = classRepository.findByName(request.getClassname()).orElseThrow(() -> new IllegalArgumentException("Class not found"));
-        Subject subject = subjectRepository.findByName(request.getSubjectname()).orElseThrow(() -> new IllegalArgumentException("Subject not found"));
-        User teacher = userRepository.findByEmail(request.getTeacheremail()).orElseThrow(() -> new IllegalArgumentException("Teacher not found"));
+    public String createMarksTable(MarksTableRequest request) {
+        Class classEntity = classRepository.findByName(request.getClassName()).orElseThrow(() -> new IllegalArgumentException("Class not found"));
+        Subject subject = subjectRepository.findByName(request.getSubjectName()).orElseThrow(() -> new IllegalArgumentException("Subject not found"));
+        User teacher = userRepository.findByEmail(request.getTeacherEmail()).orElseThrow(() -> new IllegalArgumentException("Teacher not found"));
         if(!teacher.getRole().equals(UserRole.TEACHER)){
             throw new IllegalArgumentException("User has no role teacher");
         }
@@ -166,10 +166,10 @@ public class AdminService {
         return "Successfully deleted subject " + subjectName;
     }
 
-    public String deleteMarks(String className, String subjectName) {
+    public String deleteMarksTable(String className, String subjectName) {
         Class classEntity = classRepository.findByName(className).orElseThrow( () -> new IllegalArgumentException("Class not found"));
         Subject subject = subjectRepository.findByName(subjectName).orElseThrow( () -> new IllegalArgumentException("Subject not found"));
-        marksRepository.deleteAllByClassesAndSubject(classEntity, subject);
+        marksRepository.deleteByClassesAndSubject(classEntity, subject);
         return "Successfully deleted class "+ className +" marks table, in subject " + subjectName;
     }
 
@@ -195,13 +195,13 @@ public class AdminService {
         return student;
     }
 
-    public User changeTeacherInMarksTable(MarksRequest request) {
-        User teacher = userRepository.findByEmail(request.getTeacheremail()).orElseThrow(() -> new IllegalArgumentException("Teacher "+ request.getTeacheremail() + " not found"));
+    public User changeTeacherInMarksTable(MarksTableRequest request) {
+        User teacher = userRepository.findByEmail(request.getTeacherEmail()).orElseThrow(() -> new IllegalArgumentException("Teacher "+ request.getTeacherEmail() + " not found"));
         if(!teacher.getRole().equals(UserRole.TEACHER)){
             throw new IllegalArgumentException("User has no role teacher");
         }
-        Class classEntity = classRepository.findByName(request.getClassname()).orElseThrow( () -> new IllegalArgumentException("Class "+ request.getClassname() + " not found"));
-        Subject subject = subjectRepository.findByName(request.getSubjectname()).orElseThrow( () -> new IllegalArgumentException("Subject not found"));
+        Class classEntity = classRepository.findByName(request.getClassName()).orElseThrow( () -> new IllegalArgumentException("Class "+ request.getClassName() + " not found"));
+        Subject subject = subjectRepository.findByName(request.getSubjectName()).orElseThrow( () -> new IllegalArgumentException("Subject not found"));
         Marks marks = marksRepository.findByClassesAndSubject(classEntity, subject).orElseThrow(() -> new IllegalArgumentException("Marks table not found"));
         marks.setTeacher(teacher);
         marksRepository.save(marks);
