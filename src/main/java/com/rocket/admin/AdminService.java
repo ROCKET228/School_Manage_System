@@ -4,6 +4,7 @@ import com.rocket.classes.Class;
 import com.rocket.marks.Marks;
 import com.rocket.marks.MarksRepository;
 import com.rocket.marks.MarksTableRequest;
+import com.rocket.subject.SubjectResponse;
 import com.rocket.user.UserRepository;
 import com.rocket.user.UserResponse;
 import com.rocket.user.UserRole;
@@ -20,7 +21,9 @@ import org.springframework.stereotype.Service;
 
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -118,22 +121,31 @@ public class AdminService {
         return classRepository.save(classes);
     }
 
-    public Subject createSubject(String subjectName) {
+    public String createSubject(String subjectName) {
         if(subjectRepository.findByName(subjectName).isPresent()){
-            throw new IllegalArgumentException("Subject with nam e" + subjectName + " already exist");
+            throw new IllegalArgumentException("Subject with name" + subjectName + " already exist");
         }
         var subject = Subject.builder().name(subjectName).build();
-        return subjectRepository.save(subject);
+        subjectRepository.save(subject);
+        return "Subject " + subjectName + " successfully created";
     }
 
-    public Subject setTeacherToSubject(String userEmail, String subjectName) {
+    public SubjectResponse setTeacherToSubject(String userEmail, String subjectName) {
         Subject subject = subjectRepository.findByName(subjectName).orElseThrow(() -> new IllegalArgumentException("Subject with this name " + subjectName + "  is not exist"));
         User teacher = userRepository.findByEmail(userEmail).orElseThrow(() -> new IllegalArgumentException("User with this email "+ userEmail + " is not exist"));
         if(!teacher.getRole().toString().equals(UserRole.TEACHER.toString())){
             throw new IllegalArgumentException("User with this email "+ userEmail + " has no role teacher");
         }
         subject.enrolledTeacher(teacher);
-        return subjectRepository.save(subject);
+        subjectRepository.save(subject);
+        SubjectResponse subjectResponse = new SubjectResponse();
+        Set<UserResponse> userResponse = new HashSet<>();
+        subjectResponse.setName(subject.getName());
+        for(User user : subject.getEnrolledTeachers()){
+            userResponse.add(new UserResponse(user.getFirstName(), user.getLastName(), user.getEmail(), user.getRole()));
+        }
+        subjectResponse.setEnrolledTeachers(userResponse);
+        return subjectResponse;
     }
 
     public String createMarksTable(MarksTableRequest request) {
@@ -223,8 +235,20 @@ public class AdminService {
         return classRepository.findAll();
     }
 
-    public List<Subject> getAllSubject() {
-        return subjectRepository.findAll();
+    public List<SubjectResponse> getAllSubject() {
+        List<Subject> subjects = subjectRepository.findAll();
+        List<SubjectResponse> subjectResponseList = new ArrayList<>();
+        for (var subject : subjects){
+            SubjectResponse subjectResponse = new SubjectResponse();
+            Set<UserResponse> userResponse = new HashSet<>();
+            subjectResponse.setName(subject.getName());
+            for(User user : subject.getEnrolledTeachers()){
+                userResponse.add(new UserResponse(user.getFirstName(), user.getLastName(), user.getEmail(), user.getRole()));
+            }
+            subjectResponse.setEnrolledTeachers(userResponse);
+            subjectResponseList.add(subjectResponse);
+        }
+        return subjectResponseList;
     }
 
     public List<Marks> getAllMarks() {

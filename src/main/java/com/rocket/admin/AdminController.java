@@ -6,6 +6,7 @@ import com.rocket.auth.RegisterRequest;
 import com.rocket.classes.Class;
 import com.rocket.marks.Marks;
 import com.rocket.subject.Subject;
+import com.rocket.subject.SubjectResponse;
 import com.rocket.user.UserResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -33,7 +34,7 @@ public class AdminController {
 
     @GetMapping("/getAllSubject")
     @ResponseStatus(HttpStatus.OK)
-    public List<Subject> getAllSubject(){ return adminService.getAllSubject(); }
+    public List<SubjectResponse> getAllSubject(){ return adminService.getAllSubject(); }
 
     @GetMapping("/getAllMarks")
     @ResponseStatus(HttpStatus.OK)
@@ -63,7 +64,7 @@ public class AdminController {
 
     @PutMapping("/setTeacherToSubject")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public Subject setTeacherToSubject(@RequestParam String userEmail, @RequestParam String subjectName){
+    public SubjectResponse setTeacherToSubject(@RequestParam String userEmail, @RequestParam String subjectName){
         return adminService.setTeacherToSubject(userEmail, subjectName);
     }
 
@@ -107,7 +108,7 @@ public class AdminController {
 
     @PostMapping("/createSubject")
     @ResponseStatus(HttpStatus.CREATED)
-    public Subject createSubject(@RequestParam String subjectName){
+    public String createSubject(@RequestParam String subjectName){
         return adminService.createSubject(subjectName);
     }
 
