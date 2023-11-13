@@ -6,7 +6,7 @@ import com.rocket.auth.RegisterRequest;
 import com.rocket.classes.Class;
 import com.rocket.marks.Marks;
 import com.rocket.subject.Subject;
-import com.rocket.user.User;
+import com.rocket.user.UserResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +23,7 @@ public class AdminController {
 
     @GetMapping("/getAllUsers")
     @ResponseStatus(HttpStatus.OK)
-    public List<User> getAllUsers(){
+    public List<UserResponse> getAllUsers(){
         return adminService.getAllUsers();
     }
 
@@ -42,14 +42,14 @@ public class AdminController {
 
     @PutMapping("/setTeacher")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public User setTeacherRole(@RequestParam String userEmail){
+    public UserResponse setTeacherRole(@RequestParam String userEmail){
         return adminService.setTeacherRole(userEmail);
     }
 
 
     @PutMapping("/setStudent")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public User setStudentRole(@RequestParam String userEmail){
+    public UserResponse setStudentRole(@RequestParam String userEmail){
         return adminService.setStudentRole(userEmail);
     }
 
@@ -70,20 +70,20 @@ public class AdminController {
 
     @PutMapping("/unsetStudentFromClass")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public User unsetStudentFromClass(@RequestParam String userEmail, @RequestParam String className){
+    public UserResponse unsetStudentFromClass(@RequestParam String userEmail, @RequestParam String className){
         return adminService.unsetStudentFromClass(userEmail, className);
     }
 
 
     @PutMapping("/unsetTeacherFromSubject")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public User unsetTeacherFromSubject(@RequestParam String userEmail, @RequestParam String subjectName){
+    public UserResponse unsetTeacherFromSubject(@RequestParam String userEmail, @RequestParam String subjectName){
         return adminService.unsetTeacherFromSubject(userEmail, subjectName);
     }
 
     @PutMapping("/changeTeacherInMarksTable")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public User changeTeacherInMarksTable(@RequestBody MarksTableRequest request){
+    public UserResponse changeTeacherInMarksTable(@RequestBody MarksTableRequest request){
         return adminService.changeTeacherInMarksTable(request);
     }
 
@@ -119,7 +119,7 @@ public class AdminController {
 
     @DeleteMapping("/deleteUser")
     @ResponseStatus(HttpStatus.CREATED)
-    public User deleteUser(@RequestParam String userEmail){
+    public UserResponse deleteUser(@RequestParam String userEmail){
         return adminService.deleteUser(userEmail);
     }
 

@@ -5,6 +5,7 @@ import com.rocket.marks.Marks;
 import com.rocket.marks.MarksRepository;
 import com.rocket.marks.MarksTableRequest;
 import com.rocket.user.UserRepository;
+import com.rocket.user.UserResponse;
 import com.rocket.user.UserRole;
 import com.rocket.auth.AuthenticationResponse;
 import com.rocket.auth.RegisterRequest;
@@ -18,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -30,20 +32,28 @@ public class AdminService {
     private final SubjectRepository subjectRepository;
     private final MarksRepository marksRepository;
 
-    public User setTeacherRole(String userEmail){
+    public UserResponse setTeacherRole(String userEmail){
         User teacher = userRepository.findByEmail(userEmail).orElseThrow(() -> new IllegalArgumentException("User with this email "+ userEmail + " is not exist"));
         teacher.setRole(UserRole.TEACHER);
-        return userRepository.save(teacher);
+        userRepository.save(teacher);
+        return new UserResponse(teacher.getFirstName(), teacher.getLastName(), teacher.getEmail(), teacher.getRole());
     }
 
-    public User setStudentRole(String userEmail){
+    public UserResponse setStudentRole(String userEmail){
         User student = userRepository.findByEmail(userEmail).orElseThrow(() -> new IllegalArgumentException("User with this email "+ userEmail + " is not exist"));
         student.setRole(UserRole.STUDENT);
-        return userRepository.save(student);
+        userRepository.save(student);
+        return new UserResponse(student.getFirstName(), student.getLastName(), student.getEmail(), student.getRole());
     }
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<UserResponse> getAllUsers() {
+        List<UserResponse> userResponsesList = new ArrayList<>();
+        List<User> userList = userRepository.findAll();
+        for(int i = 0; i < userList.size(); i++){
+            UserResponse user = new UserResponse(userList.get(i).getFirstName(), userList.get(i).getLastName(), userList.get(i).getEmail(), userList.get(i).getRole());
+            userResponsesList.add(user);
+        }
+        return userResponsesList;
     }
 
     public AuthenticationResponse createStudent(RegisterRequest request) {
@@ -148,10 +158,10 @@ public class AdminService {
         return "Marks table successfully created";
     }
 
-    public User deleteUser(String userEmail) {
+    public UserResponse deleteUser(String userEmail) {
         User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new IllegalArgumentException("User not found"));
         userRepository.delete(user);
-        return user;
+        return new UserResponse(user.getFirstName(), user.getLastName(), user.getEmail(), user.getRole());
     }
 
     public String deleteClasses(String className) {
@@ -173,7 +183,7 @@ public class AdminService {
         return "Successfully deleted class "+ className +" marks table, in subject " + subjectName;
     }
 
-    public User unsetTeacherFromSubject(String userEmail, String subjectName) {
+    public UserResponse unsetTeacherFromSubject(String userEmail, String subjectName) {
         User teacher = userRepository.findByEmail(userEmail).orElseThrow(() -> new IllegalArgumentException("Teacher not found"));
         if(!teacher.getRole().equals(UserRole.TEACHER)){
             throw new IllegalArgumentException("User has no role teacher");
@@ -181,10 +191,10 @@ public class AdminService {
         Subject subject = subjectRepository.findByName(subjectName).orElseThrow( () -> new IllegalArgumentException("Subject not found"));
         subject.unrolledTeacher(teacher);
         subjectRepository.save(subject);
-        return teacher;
+        return new UserResponse(teacher.getFirstName(), teacher.getLastName(), teacher.getEmail(), teacher.getRole());
     }
 
-    public User unsetStudentFromClass(String userEmail, String className) {
+    public UserResponse unsetStudentFromClass(String userEmail, String className) {
         User student = userRepository.findByEmail(userEmail).orElseThrow(() -> new IllegalArgumentException("User with this email "+ userEmail + " is not exist"));
         if(!student.getRole().toString().equals(UserRole.STUDENT.toString())){
             throw new IllegalArgumentException("User with this email "+ userEmail + " has no role student");
@@ -192,10 +202,10 @@ public class AdminService {
         Class classEntity = classRepository.findByName(className).orElseThrow( () -> new IllegalArgumentException("Class not found"));
         classEntity.unrolledStudent(student);
         classRepository.save(classEntity);
-        return student;
+        return new UserResponse(student.getFirstName(), student.getLastName(), student.getEmail(), student.getRole());
     }
 
-    public User changeTeacherInMarksTable(MarksTableRequest request) {
+    public UserResponse changeTeacherInMarksTable(MarksTableRequest request) {
         User teacher = userRepository.findByEmail(request.getTeacherEmail()).orElseThrow(() -> new IllegalArgumentException("Teacher "+ request.getTeacherEmail() + " not found"));
         if(!teacher.getRole().equals(UserRole.TEACHER)){
             throw new IllegalArgumentException("User has no role teacher");
@@ -205,7 +215,7 @@ public class AdminService {
         Marks marks = marksRepository.findByClassesAndSubject(classEntity, subject).orElseThrow(() -> new IllegalArgumentException("Marks table not found"));
         marks.setTeacher(teacher);
         marksRepository.save(marks);
-        return teacher;
+        return new UserResponse(teacher.getFirstName(), teacher.getLastName(), teacher.getEmail(), teacher.getRole());
     }
 
 
