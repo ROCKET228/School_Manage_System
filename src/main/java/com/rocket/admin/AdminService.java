@@ -2,9 +2,7 @@ package com.rocket.admin;
 
 import com.rocket.classes.Class;
 import com.rocket.classes.ClassResponse;
-import com.rocket.marks.Marks;
-import com.rocket.marks.MarksRepository;
-import com.rocket.marks.MarksTableRequest;
+import com.rocket.marks.*;
 import com.rocket.subject.SubjectResponse;
 import com.rocket.user.UserRepository;
 import com.rocket.user.UserResponse;
@@ -21,10 +19,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.time.LocalDate;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -274,7 +270,45 @@ public class AdminService {
         return subjectResponseList;
     }
 
-    public List<Marks> getAllMarks() {
-        return marksRepository.findAll();
+    public List<ClassMarksResponse> getAllMarks() {
+
+        List<Marks> marksList =  marksRepository.findAll();
+        Map<String, List<Marks>> classMap = new HashMap<>();
+        for(Marks marks : marksList){
+            String className = marks.getClasses().getName();
+            if (classMap.containsKey(className)) {
+                classMap.get(className).add(marks);
+            } else {
+                List<Marks> newMarksList = new ArrayList<>();
+                newMarksList.add(marks);
+                classMap.put(className, newMarksList);
+            }
+        }
+
+        List<ClassMarksResponse> classMarksResponse = new ArrayList<>();
+        for (Map.Entry<String, List<Marks>> entry : classMap.entrySet()) {
+            String className = entry.getKey();
+            List<Marks> marksForClass = entry.getValue();
+
+            Map<UserResponse, Map<LocalDate, Integer>> marksMap = new HashMap<>();
+
+            for (Marks mark : marksForClass) {
+                marksMap.put(
+                        new UserResponse(mark.getStudent().getFirstName(),
+                                mark.getStudent().getLastName(),
+                                mark.getStudent().getEmail(),
+                                mark.getStudent().getRole()),
+                        mark.getMarks()
+                );
+            }
+
+            classMarksResponse.add(new ClassMarksResponse(
+                    className,
+                    marksForClass.get(0).getSubject().getName(),
+                    new UserResponse(marksForClass.get(0).getTeacher().getFirstName(), marksForClass.get(0).getTeacher().getLastName(), marksForClass.get(0).getTeacher().getEmail(), marksForClass.get(0).getTeacher().getRole()),
+                    marksMap
+            ));
+        }
+        return classMarksResponse;
     }
 }

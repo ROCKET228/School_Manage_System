@@ -1,6 +1,5 @@
 package com.rocket.classes;
 
-import com.rocket.user.User;
 import com.rocket.user.UserResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

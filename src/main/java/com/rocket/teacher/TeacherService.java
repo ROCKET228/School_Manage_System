@@ -1,6 +1,9 @@
 package com.rocket.teacher;
 
+import com.rocket.marks.ClassMarksResponse;
+import com.rocket.marks.StudentMarksResponse;
 import com.rocket.user.UserRepository;
+import com.rocket.user.UserResponse;
 import com.rocket.user.UserRole;
 import com.rocket.classes.Class;
 import com.rocket.classes.ClassRepository;
@@ -14,7 +17,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Service
@@ -26,7 +31,7 @@ public class TeacherService {
     private final ClassRepository classRepository;
     private final JwtService jwtService;
 
-    public Marks setMarksToStudent(String subjectName, String studentMail, Integer mark, String authorizationHeader) {
+    public StudentMarksResponse setMarksToStudent(String subjectName, String studentMail, Integer mark, String authorizationHeader) {
         User student = userRepository.findByEmail(studentMail).orElseThrow(() -> new IllegalArgumentException("User with this email "+ studentMail + " is not exist"));
         Subject subject = subjectRepository.findByName(subjectName).orElseThrow(() -> new IllegalArgumentException("Subject with this name " + subjectName + "  is not exist"));
         Marks marks = marksRepository.findByStudentAndSubject(student, subject).orElseThrow(() -> new IllegalArgumentException("There is no student " + studentMail+ " in subject " + subjectName));
@@ -43,11 +48,18 @@ public class TeacherService {
             throw new IllegalArgumentException("That teacher is not in this marks table");
         }
         marks.addMark(mark);
-        return marksRepository.save(marks);
+        marksRepository.save(marks);
+        return new StudentMarksResponse(
+                marks.getClasses().getName(),
+                subject.getName(),
+                new UserResponse(marks.getTeacher().getFirstName(), marks.getTeacher().getLastName(), marks.getTeacher().getEmail(), marks.getTeacher().getRole()),
+                new UserResponse(student.getFirstName(), student.getLastName(), student.getEmail(), student.getRole()),
+                marks.getMarks()
+        );
     }
 
 
-    public List<Marks> getClassMarksInSubject(String className, String subjectName, String authorizationHeader) {
+    public ClassMarksResponse getClassMarksInSubject(String className, String subjectName, String authorizationHeader) {
         Class classEntity = classRepository.findByName(className).orElseThrow(() -> new IllegalArgumentException("Class with this name " + className + "  is not exist"));
         Subject subject = subjectRepository.findByName(subjectName).orElseThrow(() -> new IllegalArgumentException("Subject with this name " + subjectName + "  is not exist"));
         if(marksRepository.findAllByClassesAndSubject(classEntity, subject).isEmpty()){
@@ -69,7 +81,16 @@ public class TeacherService {
         if (!marks.get(0).getTeacher().equals(teacher)) {
             throw new IllegalArgumentException("That teacher is not in this marks table");
         }
-        return marks;
+        Map<UserResponse, Map<LocalDate, Integer>> marksMap = new HashMap();
+        for(Marks mark : marks){
+            marksMap.put(new UserResponse(mark.getStudent().getFirstName(), mark.getStudent().getLastName(), mark.getStudent().getEmail(), mark.getStudent().getRole()), mark.getMarks());
+        }
+        return new ClassMarksResponse(
+                classEntity.getName(),
+                subject.getName(),
+                new UserResponse(teacher.getFirstName(), teacher.getLastName(), teacher.getEmail(), teacher.getRole()),
+                marksMap
+        );
     }
 
     public String createMarksTable(String className, String subjectName, String authorizationHeader)
@@ -97,7 +118,7 @@ public class TeacherService {
         return "Marks table successfully created";
     }
 
-    public Marks unsetMarksFromStudent(String subjectName, String studentMail, LocalDate date, Integer mark, String authorizationHeader) {
+    public StudentMarksResponse unsetMarksFromStudent(String subjectName, String studentMail, LocalDate date, Integer mark, String authorizationHeader) {
         User student = userRepository.findByEmail(studentMail).orElseThrow(() -> new IllegalArgumentException("User with this email "+ studentMail + " is not exist"));
         Subject subject = subjectRepository.findByName(subjectName).orElseThrow(() -> new IllegalArgumentException("Subject with this name " + subjectName + "  is not exist"));
         Marks marks = marksRepository.findByStudentAndSubject(student, subject).orElseThrow(() -> new IllegalArgumentException("There is no student " + studentMail+ " in subject " + subjectName));
@@ -115,10 +136,17 @@ public class TeacherService {
         }
 
         marks.removeMark(mark, date);
-        return marksRepository.save(marks);
+        marksRepository.save(marks);
+        return new StudentMarksResponse(
+                marks.getClasses().getName(),
+                subject.getName(),
+                new UserResponse(marks.getTeacher().getFirstName(), marks.getTeacher().getLastName(), marks.getTeacher().getEmail(), marks.getTeacher().getRole()),
+                new UserResponse(student.getFirstName(), student.getLastName(), student.getEmail(), student.getRole()),
+                marks.getMarks()
+        );
     }
 
-    public Marks changeStudentMark(String subjectName, String studentMail, LocalDate date, Integer mark, String authorizationHeader) {
+    public StudentMarksResponse changeStudentMark(String subjectName, String studentMail, LocalDate date, Integer mark, String authorizationHeader) {
         User student = userRepository.findByEmail(studentMail).orElseThrow(() -> new IllegalArgumentException("User with this email "+ studentMail + " is not exist"));
         Subject subject = subjectRepository.findByName(subjectName).orElseThrow(() -> new IllegalArgumentException("Subject with this name " + subjectName + "  is not exist"));
         Marks marks = marksRepository.findByStudentAndSubject(student, subject).orElseThrow(() -> new IllegalArgumentException("There is no student " + studentMail+ " in subject " + subjectName));
@@ -134,9 +162,14 @@ public class TeacherService {
         if (!marks.getTeacher().equals(teacher)) {
             throw new IllegalArgumentException("That teacher is not in this marks table");
         }
-
         marks.changeMark(mark, date);
-
-        return marksRepository.save(marks);
+        marksRepository.save(marks);
+        return new StudentMarksResponse(
+                marks.getClasses().getName(),
+                subject.getName(),
+                new UserResponse(marks.getTeacher().getFirstName(), marks.getTeacher().getLastName(), marks.getTeacher().getEmail(), marks.getTeacher().getRole()),
+                new UserResponse(student.getFirstName(), student.getLastName(), student.getEmail(), student.getRole()),
+                marks.getMarks()
+        );
     }
 }
