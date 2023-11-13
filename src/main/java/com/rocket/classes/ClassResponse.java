@@ -1,4 +1,4 @@
-package com.rocket.subject;
+package com.rocket.classes;
 
 import com.rocket.user.User;
 import com.rocket.user.UserResponse;
@@ -14,7 +14,7 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SubjectResponse {
-    private String subjectName;
-    private Set<UserResponse> enrolledTeachers = new HashSet<>();
+public class ClassResponse {
+    private String className;
+    private Set<UserResponse> enrolledStudents = new HashSet<>();
 }

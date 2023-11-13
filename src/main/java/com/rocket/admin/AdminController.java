@@ -1,5 +1,6 @@
 package com.rocket.admin;
 
+import com.rocket.classes.ClassResponse;
 import com.rocket.marks.MarksTableRequest;
 import com.rocket.auth.AuthenticationResponse;
 import com.rocket.auth.RegisterRequest;
@@ -30,7 +31,7 @@ public class AdminController {
 
     @GetMapping("/getAllClass")
     @ResponseStatus(HttpStatus.OK)
-    public List<Class> getAllClass(){ return adminService.getAllClass(); }
+    public List<ClassResponse> getAllClass(){ return adminService.getAllClass(); }
 
     @GetMapping("/getAllSubject")
     @ResponseStatus(HttpStatus.OK)
@@ -57,7 +58,7 @@ public class AdminController {
 
     @PutMapping("/setStudentToClass")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public Class setStudentToClass(@RequestParam String userEmail, @RequestParam String className){
+    public ClassResponse setStudentToClass(@RequestParam String userEmail, @RequestParam String className){
         return adminService.setStudentToClass(userEmail, className);
     }
 
@@ -101,7 +102,7 @@ public class AdminController {
 
     @PostMapping("/createClasses")
     @ResponseStatus(HttpStatus.CREATED)
-    public Class createClasses(@RequestParam String className){
+    public String createClasses(@RequestParam String className){
         return adminService.createClasses(className);
     }
 

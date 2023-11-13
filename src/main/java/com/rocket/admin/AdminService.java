@@ -1,6 +1,7 @@
 package com.rocket.admin;
 
 import com.rocket.classes.Class;
+import com.rocket.classes.ClassResponse;
 import com.rocket.marks.Marks;
 import com.rocket.marks.MarksRepository;
 import com.rocket.marks.MarksTableRequest;
@@ -91,15 +92,16 @@ public class AdminService {
 
     }
 
-    public Class createClasses(String className) {
+    public String createClasses(String className) {
         if(classRepository.findByName(className).isPresent()){
             throw new IllegalArgumentException("Class with name" + className + "already exist");
         }
         var classes = Class.builder().name(className).build();
-        return classRepository.save(classes);
+        classRepository.save(classes);
+        return "Class " + className + " successfully created";
     }
 
-    public Class setStudentToClass(String userEmail, String className) {
+    public ClassResponse setStudentToClass(String userEmail, String className) {
         Class classes = classRepository.findByName(className).orElseThrow(() -> new IllegalArgumentException("Class with this name " + className + "  is not exist"));
         User student = userRepository.findByEmail(userEmail).orElseThrow(() -> new IllegalArgumentException("User with this email "+ userEmail + " is not exist"));
         if(!student.getRole().toString().equals(UserRole.STUDENT.toString())){
@@ -118,7 +120,15 @@ public class AdminService {
 
             marksRepository.save(newMarks);
         }
-        return classRepository.save(classes);
+        classRepository.save(classes);
+        ClassResponse classResponse  = new ClassResponse();
+        classResponse.setClassName(classes.getName());
+        Set<UserResponse> userResponseSet = new HashSet<>();
+        for(User user: classes.getEnrolledStudents()){
+            userResponseSet.add(new UserResponse(user.getFirstName(), user.getLastName(), user.getEmail(), user.getRole()));
+        }
+        classResponse.setEnrolledStudents(userResponseSet);
+        return classResponse;
     }
 
     public String createSubject(String subjectName) {
@@ -139,12 +149,12 @@ public class AdminService {
         subject.enrolledTeacher(teacher);
         subjectRepository.save(subject);
         SubjectResponse subjectResponse = new SubjectResponse();
-        Set<UserResponse> userResponse = new HashSet<>();
-        subjectResponse.setName(subject.getName());
+        Set<UserResponse> userResponseSet = new HashSet<>();
+        subjectResponse.setSubjectName(subject.getName());
         for(User user : subject.getEnrolledTeachers()){
-            userResponse.add(new UserResponse(user.getFirstName(), user.getLastName(), user.getEmail(), user.getRole()));
+            userResponseSet.add(new UserResponse(user.getFirstName(), user.getLastName(), user.getEmail(), user.getRole()));
         }
-        subjectResponse.setEnrolledTeachers(userResponse);
+        subjectResponse.setEnrolledTeachers(userResponseSet);
         return subjectResponse;
     }
 
@@ -231,8 +241,21 @@ public class AdminService {
     }
 
 
-    public List<Class> getAllClass() {
-        return classRepository.findAll();
+    public List<ClassResponse> getAllClass() {
+        List<Class> classList = classRepository.findAll();
+
+        List<ClassResponse> classResponseList  = new ArrayList<>();
+        for(Class clas : classList){
+            ClassResponse classResponse  = new ClassResponse();
+            classResponse.setClassName(clas.getName());
+            Set<UserResponse> userResponseSet = new HashSet<>();
+            for(User user: clas.getEnrolledStudents()){
+                userResponseSet.add(new UserResponse(user.getFirstName(), user.getLastName(), user.getEmail(), user.getRole()));
+            }
+            classResponse.setEnrolledStudents(userResponseSet);
+            classResponseList.add(classResponse);
+        }
+        return classResponseList;
     }
 
     public List<SubjectResponse> getAllSubject() {
@@ -241,7 +264,7 @@ public class AdminService {
         for (var subject : subjects){
             SubjectResponse subjectResponse = new SubjectResponse();
             Set<UserResponse> userResponse = new HashSet<>();
-            subjectResponse.setName(subject.getName());
+            subjectResponse.setSubjectName(subject.getName());
             for(User user : subject.getEnrolledTeachers()){
                 userResponse.add(new UserResponse(user.getFirstName(), user.getLastName(), user.getEmail(), user.getRole()));
             }
