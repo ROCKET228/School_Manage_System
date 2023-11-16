@@ -192,35 +192,36 @@ public class AdminService {
         return "Marks table successfully created";
     }
 
-    //TODO: fix bugs cannot delete
+    //TODO: fix bugs when i delete user it must delete from class, subject and marks
     public UserResponse deleteUser(String userEmail) {
         User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new IllegalArgumentException("User not found"));
         userRepository.delete(user);
         return new UserResponse(user.getFirstName(), user.getLastName(), user.getEmail(), user.getRole());
     }
 
-    //TODO: fix bugs cannot delete
+
     public String deleteClasses(String className) {
         Class classEntity = classRepository.findByName(className).orElseThrow( () -> new IllegalArgumentException("Class not found"));
         classRepository.delete(classEntity);
         return "Successfully deleted class " + className;
     }
 
-    //TODO: fix bugs cannot delete
+
     public String deleteSubject(String subjectName) {
         Subject subject = subjectRepository.findByName(subjectName).orElseThrow( () -> new IllegalArgumentException("Subject not found"));
         subjectRepository.delete(subject);
         return "Successfully deleted subject " + subjectName;
     }
 
-    //TODO: fix bugs cannot delete
+
     public String deleteMarksTable(String className, String subjectName) {
         Class classEntity = classRepository.findByName(className).orElseThrow( () -> new IllegalArgumentException("Class not found"));
         Subject subject = subjectRepository.findByName(subjectName).orElseThrow( () -> new IllegalArgumentException("Subject not found"));
-        marksRepository.deleteByClassesAndSubject(classEntity, subject);
+        marksRepository.deleteAllByClassesAndSubject(classEntity, subject).orElseThrow(() -> new IllegalArgumentException("Marks table not found"));
         return "Successfully deleted class "+ className +" marks table, in subject " + subjectName;
     }
 
+    //TODO: make update when unset teacher
     public UserResponse unsetTeacherFromSubject(String userEmail, String subjectName) {
         User teacher = userRepository.findByEmail(userEmail).orElseThrow(() -> new IllegalArgumentException("Teacher not found"));
         if(!teacher.getRole().equals(UserRole.TEACHER)){
@@ -232,6 +233,7 @@ public class AdminService {
         return new UserResponse(teacher.getFirstName(), teacher.getLastName(), teacher.getEmail(), teacher.getRole());
     }
 
+    //TODO: make update when unset teacher
     public UserResponse unsetStudentFromClass(String userEmail, String className) {
         User student = userRepository.findByEmail(userEmail).orElseThrow(() -> new IllegalArgumentException("User with this email "+ userEmail + " is not exist"));
         if(!student.getRole().toString().equals(UserRole.STUDENT.toString())){

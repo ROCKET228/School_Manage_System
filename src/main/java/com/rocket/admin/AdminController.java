@@ -118,7 +118,7 @@ public class AdminController {
     }
     //TODO: check why not work
     @DeleteMapping("/deleteUser")
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     public UserResponse deleteUser(@RequestParam String userEmail){
         return adminService.deleteUser(userEmail);
     }
