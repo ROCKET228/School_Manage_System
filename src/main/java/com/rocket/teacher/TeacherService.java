@@ -106,6 +106,9 @@ public class TeacherService {
         if (!subject.getEnrolledTeachers().contains(teacher)) {
             throw new IllegalArgumentException("That teacher cannot teach that subject");
         }
+        if(marksRepository.findByClassesAndSubject(classEntity, subject).isPresent()){
+            throw new IllegalArgumentException("Marks table for class " + classEntity.getName() + " in subject " + subject.getName() + " is already exists");
+        }
         for (User student : classEntity.getEnrolledStudents()) {
             Marks marks =  Marks.builder().classes(classEntity)
                     .subject(subject)

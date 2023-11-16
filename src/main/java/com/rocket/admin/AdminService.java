@@ -56,7 +56,11 @@ public class AdminService {
         return userResponsesList;
     }
 
+
     public AuthenticationResponse createStudent(RegisterRequest request) {
+        if(userRepository.findByEmail(request.getEmail()).isPresent()){
+            throw new IllegalArgumentException("User with email " + request.getEmail() + " is already exists");
+        }
         var student = User.builder()
                 .firstName(request.getFirstname())
                 .lastName(request.getLastname())
@@ -72,7 +76,11 @@ public class AdminService {
 
     }
 
+
     public AuthenticationResponse createTeacher(RegisterRequest request) {
+        if(userRepository.findByEmail(request.getEmail()).isPresent()){
+            throw new IllegalArgumentException("User with email " + request.getEmail() + " is already exists");
+        }
         var teacher = User.builder()
                 .firstName(request.getFirstname())
                 .lastName(request.getLastname())
@@ -88,6 +96,7 @@ public class AdminService {
 
     }
 
+
     public String createClasses(String className) {
         if(classRepository.findByName(className).isPresent()){
             throw new IllegalArgumentException("Class with name" + className + "already exist");
@@ -96,6 +105,7 @@ public class AdminService {
         classRepository.save(classes);
         return "Class " + className + " successfully created";
     }
+
 
     public ClassResponse setStudentToClass(String userEmail, String className) {
         Class classes = classRepository.findByName(className).orElseThrow(() -> new IllegalArgumentException("Class with this name " + className + "  is not exist"));
@@ -127,6 +137,7 @@ public class AdminService {
         return classResponse;
     }
 
+
     public String createSubject(String subjectName) {
         if(subjectRepository.findByName(subjectName).isPresent()){
             throw new IllegalArgumentException("Subject with name" + subjectName + " already exist");
@@ -135,6 +146,7 @@ public class AdminService {
         subjectRepository.save(subject);
         return "Subject " + subjectName + " successfully created";
     }
+
 
     public SubjectResponse setTeacherToSubject(String userEmail, String subjectName) {
         Subject subject = subjectRepository.findByName(subjectName).orElseThrow(() -> new IllegalArgumentException("Subject with this name " + subjectName + "  is not exist"));
@@ -154,6 +166,7 @@ public class AdminService {
         return subjectResponse;
     }
 
+
     public String createMarksTable(MarksTableRequest request) {
         Class classEntity = classRepository.findByName(request.getClassName()).orElseThrow(() -> new IllegalArgumentException("Class not found"));
         Subject subject = subjectRepository.findByName(request.getSubjectName()).orElseThrow(() -> new IllegalArgumentException("Subject not found"));
@@ -163,6 +176,9 @@ public class AdminService {
         }
         if(!subject.getEnrolledTeachers().contains(teacher)){
             throw new IllegalArgumentException("That teacher can not teach that subject");
+        }
+        if(marksRepository.findByClassesAndSubject(classEntity, subject).isPresent()){
+            throw new IllegalArgumentException("Marks table for class " + classEntity.getName() + " in subject " + subject.getName() + " is already exists");
         }
         for (User student : classEntity.getEnrolledStudents()) {
             Marks marks =  Marks.builder().classes(classEntity)
@@ -176,24 +192,28 @@ public class AdminService {
         return "Marks table successfully created";
     }
 
+    //TODO: fix bugs cannot delete
     public UserResponse deleteUser(String userEmail) {
         User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new IllegalArgumentException("User not found"));
         userRepository.delete(user);
         return new UserResponse(user.getFirstName(), user.getLastName(), user.getEmail(), user.getRole());
     }
 
+    //TODO: fix bugs cannot delete
     public String deleteClasses(String className) {
         Class classEntity = classRepository.findByName(className).orElseThrow( () -> new IllegalArgumentException("Class not found"));
         classRepository.delete(classEntity);
         return "Successfully deleted class " + className;
     }
 
+    //TODO: fix bugs cannot delete
     public String deleteSubject(String subjectName) {
         Subject subject = subjectRepository.findByName(subjectName).orElseThrow( () -> new IllegalArgumentException("Subject not found"));
         subjectRepository.delete(subject);
         return "Successfully deleted subject " + subjectName;
     }
 
+    //TODO: fix bugs cannot delete
     public String deleteMarksTable(String className, String subjectName) {
         Class classEntity = classRepository.findByName(className).orElseThrow( () -> new IllegalArgumentException("Class not found"));
         Subject subject = subjectRepository.findByName(subjectName).orElseThrow( () -> new IllegalArgumentException("Subject not found"));

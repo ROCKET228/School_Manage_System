@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
-    private final UserRepository repository;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
@@ -22,7 +22,11 @@ public class AuthenticationService {
     @Value("${application.security.admin.secret-key}")
     private String ADMIN_SECRET_KEY;
 
+
     public AuthenticationResponse register(RegisterRequest request) {
+        if(userRepository.findByEmail(request.getEmail()).isPresent()){
+            throw new IllegalArgumentException("User with email " + request.getEmail() + " is already exists");
+        }
         var user = User.builder()
                 .firstName(request.getFirstname())
                 .lastName(request.getLastname())
@@ -30,14 +34,18 @@ public class AuthenticationService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(UserRole.USER)
                 .build();
-        repository.save(user);
+        userRepository.save(user);
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();
     }
 
+
     public AuthenticationResponse register(RegisterRequest request, String adminKey) {
+        if(userRepository.findByEmail(request.getEmail()).isPresent()){
+            throw new IllegalArgumentException("User with email " + request.getEmail() + " is already exists");
+        }
         if(adminKey.equals(ADMIN_SECRET_KEY)) {
             var user = User.builder()
                     .firstName(request.getFirstname())
@@ -46,7 +54,7 @@ public class AuthenticationService {
                     .password(passwordEncoder.encode(request.getPassword()))
                     .role(UserRole.ADMIN)
                     .build();
-            repository.save(user);
+            userRepository.save(user);
             var jwtToken = jwtService.generateToken(user);
             return AuthenticationResponse.builder()
                     .token(jwtToken)
@@ -63,7 +71,7 @@ public class AuthenticationService {
                         request.getPassword()
                 )
         );
-        var user = repository.findByEmail(request.getEmail())
+        var user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow();
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
