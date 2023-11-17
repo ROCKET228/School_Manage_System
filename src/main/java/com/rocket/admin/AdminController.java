@@ -116,29 +116,30 @@ public class AdminController {
     public String createMarksTable(@RequestBody MarksTableRequest request){
         return adminService.createMarksTable(request);
     }
-    //TODO: check why not work
+
     @DeleteMapping("/deleteUser")
     @ResponseStatus(HttpStatus.OK)
     public UserResponse deleteUser(@RequestParam String userEmail){
         return adminService.deleteUser(userEmail);
     }
-    //TODO: check why not work
+
     @DeleteMapping("/deleteClasses")
     @ResponseStatus(HttpStatus.OK)
     public String deleteClasses(@RequestParam String className){
         return adminService.deleteClasses(className);
     }
-    //TODO: check why not work
+
     @DeleteMapping("/deleteSubject")
     @ResponseStatus(HttpStatus.OK)
     public String deleteSubject(@RequestParam String subjectName){
         return adminService.deleteSubject(subjectName);
     }
-    //TODO: check why not work
+
     @DeleteMapping("/deleteMarksTable")
     @ResponseStatus(HttpStatus.OK)
     public String deleteMarksTable(@RequestParam String className, @RequestParam String subjectName){
         return adminService.deleteMarksTable(className, subjectName);
     }
+    //TODO: make controller to set teacher in marks table
 
 }

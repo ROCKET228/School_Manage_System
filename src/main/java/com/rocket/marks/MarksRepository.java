@@ -12,11 +12,15 @@ import java.util.Optional;
 
 @Repository
 public interface MarksRepository extends JpaRepository<Marks, Integer> {
-    Optional<Marks> deleteByClassesAndSubject(Class classEntity, Subject subject);
-    Optional<Marks> findByTeacher(User teacher);
+    @Transactional
+    Optional<Marks> removeAllByStudentAndClasses(User student, Class classEntity);
+    @Transactional
+    List<Marks> findAllByTeacherAndSubject(User teacher, Subject subject);
     Optional<Marks> findAllByClasses(Class classEntity);
-    Optional<Marks> removeByTeacher(User teacher);
-    Optional<Marks> removeByMarks(Marks marks);
+    @Transactional
+    Optional<Marks> removeAllByClasses(Class classEntity);
+    @Transactional
+    Optional<Marks> removeAllBySubject(Subject subject);
     @Transactional
     Optional<Marks> deleteAllByClassesAndSubject(Class classEntity, Subject subject);
     Optional<Marks> findByClassesAndSubject(Class classEntity, Subject subject);
