@@ -67,6 +67,12 @@ public class AdminController {
         return adminService.setTeacherToSubject(userEmail, subjectName);
     }
 
+    @PutMapping("/setTeacherToMarksTable")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public ClassMarksResponse setTeacherToMarksTable(@RequestBody MarksTableRequest request){
+        return adminService.setTeacherToMarksTable(request);
+    }
+
 
     @PutMapping("/unsetStudentFromClass")
     @ResponseStatus(HttpStatus.ACCEPTED)
@@ -140,6 +146,5 @@ public class AdminController {
     public String deleteMarksTable(@RequestParam String className, @RequestParam String subjectName){
         return adminService.deleteMarksTable(className, subjectName);
     }
-    //TODO: make controller to set teacher in marks table
 
 }

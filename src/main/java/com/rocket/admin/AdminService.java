@@ -354,4 +354,32 @@ public class AdminService {
         }
         return classMarksResponse;
     }
+
+    public ClassMarksResponse setTeacherToMarksTable(MarksTableRequest request) {
+        Class classEntity = classRepository.findByName(request.getClassName()).orElseThrow(() -> new IllegalArgumentException("Class not found"));
+        Subject subject = subjectRepository.findByName(request.getSubjectName()).orElseThrow(() -> new IllegalArgumentException("Subject not found"));
+        User teacher = userRepository.findByEmail(request.getTeacherEmail()).orElseThrow(() -> new IllegalArgumentException("Teacher not found"));
+        if(!teacher.getRole().equals(UserRole.TEACHER)){
+            throw new IllegalArgumentException("User has no role teacher");
+        }
+        if(!subject.getEnrolledTeachers().contains(teacher)){
+            throw new IllegalArgumentException("That teacher can not teach that subject");
+        }
+        List<Marks> marks = marksRepository.findAllByClassesAndSubject(classEntity, subject);
+
+        for(Marks mark: marksRepository.findAllByClassesAndSubject(classEntity, subject)){
+            mark.setTeacher(teacher);
+            marksRepository.save(mark);
+        }
+        Map<UserResponse, Map<LocalDate, Integer>> marksMap = new HashMap();
+        for(Marks mark : marks){
+            marksMap.put(new UserResponse(mark.getStudent().getFirstName(), mark.getStudent().getLastName(), mark.getStudent().getEmail(), mark.getStudent().getRole()), mark.getMarks());
+        }
+        return new ClassMarksResponse(
+                classEntity.getName(),
+                subject.getName(),
+                new UserResponse(teacher.getFirstName(), teacher.getLastName(), teacher.getEmail(), teacher.getRole()),
+                marksMap
+        );
+    }
 }
