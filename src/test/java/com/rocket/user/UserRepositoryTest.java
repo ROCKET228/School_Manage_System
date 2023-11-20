@@ -22,10 +22,7 @@ class UserRepositoryTest {
 
     @Autowired
     private UserRepository userRepository;
-    @Before
-    public void setup(){
 
-    }
     @Test
     void findByEmail() {
         User user = new User(1, "Name", "lastName", "user@mail.com", "12345", UserRole.USER);
