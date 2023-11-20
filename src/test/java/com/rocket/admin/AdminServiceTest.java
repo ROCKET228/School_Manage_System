@@ -21,7 +21,12 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.Optional;
+
 import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 
 
 @ExtendWith(MockitoExtension.class)
@@ -58,17 +63,31 @@ class AdminServiceTest {
 
     @Test
     void createTeacher() {
-        User user = new User(1, "Name", "lastName", "user@mail.com", "12345", UserRole.TEACHER);
-        RegisterRequest registerRequest = new RegisterRequest("Name", "lastName", "user@mail.com", "12345");
-        String encodePassword = passwordEncoder.encode("12345");
+        RegisterRequest registerRequest = new RegisterRequest("John", "Doe", "john.doe@example.com", "password123");
 
-        when(passwordEncoder.encode(Mockito.any(String.class))).thenReturn(encodePassword);
-        when(userRepository.save(Mockito.any(User.class))).thenReturn(user);
-        when(jwtService.generateToken(Mockito.any(User.class))).thenReturn(jwtService.generateToken(user));
+        when(userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
 
-        AuthenticationResponse savedUser = adminService.createTeacher(registerRequest);
+        when(passwordEncoder.encode(anyString())).thenReturn("hashedPassword");
 
-        Assertions.assertThat(savedUser).isNotNull();
+        when(jwtService.generateToken(any(User.class))).thenReturn("mockedToken");
+
+        // Act
+        AuthenticationResponse authenticationResponse = adminService.createTeacher(registerRequest);
+
+        // Assert
+        assertNotNull(authenticationResponse);
+        assertEquals("mockedToken", authenticationResponse.getToken());
+
+
+        verify(userRepository, times(1)).save(argThat(user ->
+                user.getFirstName().equals("John") &&
+                        user.getLastName().equals("Doe") &&
+                        user.getEmail().equals("john.doe@example.com") &&
+                        user.getPassword().equals("hashedPassword") &&
+                        user.getRole().equals(UserRole.TEACHER)
+        ));
+
+        verify(userRepository, times(1)).findByEmail("john.doe@example.com");
     }
 
     @Test
