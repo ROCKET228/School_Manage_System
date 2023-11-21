@@ -9,9 +9,9 @@ import com.rocket.config.JwtService;
 import com.rocket.user.User;
 
 import com.rocket.user.UserRepository;
-import com.rocket.user.UserResponse;
 import com.rocket.user.UserRole;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -43,6 +43,15 @@ class AdminServiceTest {
     @InjectMocks
     private AdminService adminService;
 
+    private RegisterRequest registerRequest;
+    private Class classes;
+
+    @BeforeEach
+    public void init(){
+        registerRequest = new RegisterRequest("John", "Doe", "john.doe@example.com", "password123");
+        classes = Class.builder().name("11-B").build();
+    }
+
 
     @Test
     void setTeacherRole() {
@@ -63,7 +72,6 @@ class AdminServiceTest {
 
     @Test
     void createTeacher() {
-        RegisterRequest registerRequest = new RegisterRequest("John", "Doe", "john.doe@example.com", "password123");
 
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
 
@@ -92,14 +100,12 @@ class AdminServiceTest {
 
     @Test
     void createClasses() {
-        String className = "11-B";
-        Class classes = Class.builder().name(className).build();
 
         when(classRepository.save(Mockito.any(Class.class))).thenReturn(classes);
 
-        String savedClass = adminService.createClasses(className);
+        String savedClass = adminService.createClasses("11-B");
 
-        Assertions.assertThat(savedClass).isEqualTo("Class " + className + " successfully created");
+        Assertions.assertThat(savedClass).isEqualTo("Class 11-B successfully created");
     }
 
     @Test
