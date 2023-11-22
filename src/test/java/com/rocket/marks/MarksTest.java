@@ -1,13 +1,8 @@
 package com.rocket.marks;
 
-import com.rocket.classes.Class;
-import com.rocket.subject.Subject;
-import com.rocket.user.User;
-import org.junit.jupiter.api.BeforeEach;
+
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 import java.time.LocalDate;
 

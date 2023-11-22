@@ -1,25 +1,18 @@
 package com.rocket.classes;
 
-import com.rocket.auth.RegisterRequest;
 import com.rocket.user.User;
 import com.rocket.user.UserRepository;
 import com.rocket.user.UserRole;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
@@ -35,7 +28,7 @@ class ClassRepositoryTest {
 
     private User student;
 
-    private String className = "11-B";
+    private final String className = "11-B";
 
     @BeforeEach
     public void init(){

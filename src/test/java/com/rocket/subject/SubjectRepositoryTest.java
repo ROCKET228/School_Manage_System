@@ -31,7 +31,7 @@ class SubjectRepositoryTest {
 
     private User teacher;
 
-    private String subjectName = "Math";
+    private final String subjectName = "Math";
 
     @BeforeEach
     public void init(){

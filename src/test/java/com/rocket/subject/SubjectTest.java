@@ -1,6 +1,5 @@
 package com.rocket.subject;
 
-import com.rocket.classes.Class;
 import com.rocket.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

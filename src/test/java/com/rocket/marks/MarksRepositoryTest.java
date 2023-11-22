@@ -8,21 +8,17 @@ import com.rocket.user.User;
 import com.rocket.user.UserRepository;
 import com.rocket.user.UserRole;
 import org.assertj.core.api.Assertions;
-import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
 
 
 @DataJpaTest
@@ -44,23 +40,21 @@ class MarksRepositoryTest {
 
     private User teacher;
 
-    private String subjectName = "Math";
-
     private Class classes;
 
     private User student;
-
-    private String className = "11-B";
 
     private Marks marks;
 
 
     @BeforeEach
     public void init(){
+        String subjectName = "Math";
         subject = Subject.builder().name(subjectName).build();
         subjectRepository.save(subject);
         teacher = User.builder().firstName("TeacherName").lastName("lastName").email("teacher@mail.com").password("12345").role(UserRole.TEACHER).build();
         userRepository.save(teacher);
+        String className = "11-B";
         classes = Class.builder().name(className).build();
         classRepository.save(classes);
         student = User.builder().firstName("StudentName").lastName("lastName").email("student@mail.com").password("12345").role(UserRole.STUDENT).build();
