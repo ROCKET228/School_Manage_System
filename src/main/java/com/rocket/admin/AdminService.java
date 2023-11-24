@@ -209,7 +209,7 @@ public class AdminService {
     public String deleteClasses(String className) {
         Class classEntity = classRepository.findByName(className).orElseThrow( () -> new IllegalArgumentException("Class not found"));
         if(!marksRepository.removeAllByClasses(classEntity).isPresent()){
-            marksRepository.removeAllByClasses(classEntity).orElseThrow( () -> new IllegalArgumentException("Class not found"));
+            marksRepository.removeAllByClasses(classEntity).orElseThrow( () -> new IllegalArgumentException("Marks table not found"));
         }
         classRepository.delete(classEntity);
         return "Successfully deleted class " + className;
@@ -218,7 +218,7 @@ public class AdminService {
     public String deleteSubject(String subjectName) {
         Subject subject = subjectRepository.findByName(subjectName).orElseThrow( () -> new IllegalArgumentException("Subject not found"));
         if(!marksRepository.removeAllBySubject(subject).isPresent()){
-            marksRepository.removeAllBySubject(subject).orElseThrow( () -> new IllegalArgumentException("Class not found"));
+            marksRepository.removeAllBySubject(subject).orElseThrow( () -> new IllegalArgumentException("Marks table not found"));
         }
         subjectRepository.delete(subject);
         return "Successfully deleted subject " + subjectName;
@@ -261,7 +261,7 @@ public class AdminService {
         classEntity.unrolledStudent(student);
         classRepository.save(classEntity);
         if(!marksRepository.removeAllByStudentAndClasses(student, classEntity).isPresent()){
-            marksRepository.removeAllByStudentAndClasses(student, classEntity).orElseThrow( () -> new IllegalArgumentException("Class not found"));
+            marksRepository.removeAllByStudentAndClasses(student, classEntity).orElseThrow( () -> new IllegalArgumentException("Marks table not found"));
         }
         return new UserResponse(student.getFirstName(), student.getLastName(), student.getEmail(), student.getRole());
     }
