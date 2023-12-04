@@ -3,7 +3,6 @@ spring:
         url: jdbc:postgresql://localhost:5432/school_manage_system
         username: postgres
         password: 12345
-        driver-class-name: org.postgresql.Driver
     jpa:
         hibernate:
             ddl-auto: update

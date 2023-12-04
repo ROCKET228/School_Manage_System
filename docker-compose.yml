@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  # PostgreSQL database service
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: school_manage_system
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    networks:
+      - mynetwork
+
+  # Java Maven application service
+  myapp:
+    build: .
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/school_manage_system
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: password
+    ports:
+      - "8080:8080"
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge
